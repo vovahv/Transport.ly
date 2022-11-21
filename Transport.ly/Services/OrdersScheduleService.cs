@@ -35,7 +35,7 @@ public class OrdersScheduleService : IOrdersScheduleService
             foreach (var day in _flightSchedule)
             {
                 var flightWasFound = day.FlightByDestination.TryGetValue(order.Destination, out var flight);
-                if (flightWasFound && flight.Orders.Count < flight.Plane.Capacity)
+                if (flightWasFound && flight?.Orders.Count < flight?.Plane.Capacity)
                 {
                     flight.Orders.Add(order);
                     orderWasScheduled = true;
