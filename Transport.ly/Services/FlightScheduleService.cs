@@ -27,6 +27,22 @@ public class FlightScheduleService : IFlightScheduleService
         }
     }
 
+    public List<Order> GetOrdersByFlightNumber(string id)
+    {
+        foreach (var day in Schedule)
+        {
+            foreach (var flight in day.Flights)
+            {
+                if (id == flight.Id)
+                {
+                    return flight.Orders;
+                }
+            }
+        }
+
+        return new List<Order>();
+    }
+
     private void CreateSchedule()
     {
         // Init Planes

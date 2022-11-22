@@ -10,6 +10,13 @@ public class OrdersScheduleService : IOrdersScheduleService
     private Order[] _orders;
     private List<Order> _notScheduledOrders;
 
+    private readonly Dictionary<string, int> PriorityByService = new Dictionary<string, int>
+    {
+        {"same-day", 1},
+        {"next-day", 2},
+        {"regular", 3},
+    };
+
     public OrdersScheduleService(Day[] flightSchedule)
     {
         _flightSchedule = flightSchedule;
@@ -21,15 +28,23 @@ public class OrdersScheduleService : IOrdersScheduleService
         var ordersConfig = JsonSerializer.Deserialize<Dictionary<string, OrderConfig>>(json);
         
         _orders = ordersConfig
-            .Select((p, i) => new Order { Id = p.Key, Priority = i + 1, Destination = p.Value.destination })
+            .Select((p, i) => new Order
+            {
+                Id = p.Key, 
+                Priority = i + 1, 
+                Destination = p.Value.destination,
+                Service = p.Value.service
+            })
             .ToArray();
     }
 
     public void ScheduleOrders()
     {
         _notScheduledOrders = new List<Order>();
+
+        var orderedOrders = _orders.OrderBy(o => PriorityByService[o.Service]).ToList();
             
-        foreach (var order in _orders)
+        foreach (var order in orderedOrders)
         {
             var orderWasScheduled = false;
             foreach (var day in _flightSchedule)

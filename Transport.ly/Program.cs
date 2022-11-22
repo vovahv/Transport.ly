@@ -18,6 +18,8 @@ namespace Transport.ly
             _ordersScheduleService.ScheduleOrders();
             _ordersScheduleService.PrintScheduledOrders();
             
+            var orders = _flightScheduleService.GetOrdersByFlightNumber("3");
+            
             Console.ReadKey();
         }
     }
